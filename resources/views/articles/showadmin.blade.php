@@ -12,8 +12,49 @@
               <header class="panel-heading wht-bg">
                 <h4 class="gen-case">
                    @lang('lang.Lire la demande')
-                   
-                  </h4>
+                   <form action="#" class="pull-right mail-src-position">
+                      <!--div class="input-append">
+                        <input type="text" class="form-control " placeholder="Search Mail">
+                      </div-->
+					  <div class="btn-group">
+						<button type="button" class="btn btn-theme dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+						  Options <span class="caret"></span>
+						  </button>
+						<ul class="dropdown-menu" role="menu">
+						  <li><a onclick="exportData(event.target);" data-href="{{route('articles.exportbyarticle',['article_id'=>$article->id])}}"><i class="fa fa-download"></i> Exporter</a></li>
+						  <li><a href="#" onclick="showtransfert();"><i class="fa fa-share-square-o"></i> Transferer</a></li>
+						</ul>
+					  </div>
+
+					  	<!--div class="btn-group hidden-phone">
+							<a data-toggle="dropdown" href="#" class="btn mini blue" aria-expanded="false">
+							  Options
+							  <i class="fa fa-angle-down "></i>
+							  </a>
+							<ul class="dropdown-menu">
+							  <li><a onclick="exportData(event.target);" data-href="{{route('articles.export',['statut'=>'statut'])}}"><i class="fa fa-download"></i> Exporter</a></li>
+							  <li class="divider"></li>
+							  <li><a href="#" onclick="showperiod();"><i class="fa fa-share-square-o"></i> Transferer</a></li>
+							</ul>
+						</div-->
+                    </form>
+                </h4>
+				<div class="row" id="transfert" style="display: none;">
+						   <div class="col-md-12">
+								<form class="form-inline" role="form " method="get" action="{{ route('articles.export') }}">
+							
+								   <div class="form-group">
+									  <label class="col-sm-4 control-label">Administrateur</label>
+									  <div class="col-sm-8">
+										<input type="text" class="form-control">
+									  </div>
+								   </div>
+								   <input type="hidden" value="{{$article->id}}" name="id">
+								
+								<button type="submit"  class="btn btn-danger" >Transferer <i class="fa fa-share-square-o"></i></button>
+							   </form>     
+						   </div>
+				</div>
               </header>
               <div class="panel-body ">
                 <div class="mail-header row">
@@ -206,7 +247,18 @@
 	}
     </style>
   <script src="{{ asset('js/app.js') }}"></script>
-
+   <script>
+   function exportData(_this) {
+	  $('#transfert').hide();
+      let _url = $(_this).data('href');
+      window.location.href = _url;
+   }
+    // $('#periode').hide(); 
+   
+   function showtransfert(){
+		  $('#transfert').show(); 
+   }
+</script>
   <script type="text/javascript">
   function paginate(url, id){
 	    $.ajax({

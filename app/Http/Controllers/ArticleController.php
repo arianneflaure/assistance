@@ -6,6 +6,7 @@ use App\Article;
 // use App\DB;
 use Illuminate\Support\Facades\DB;
 use App\User;
+use App\Reponse;
 use App\Repositories\ArticleRepository;
 use Illuminate\Http\Request;
 use App\Http\Requests\ArticleRequest;
@@ -61,6 +62,44 @@ class ArticleController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+	public function exportByArticleCsv(Request $request) {
+		$fileName = 'demandes'.$request->article_id.'.csv';
+		$data = Reponse::where(['article_id'=>$request->article_id])
+						->orderBy('created_at', 'asc')->get();
+		$article=Article::find($request->article_id);
+		// var_dump($article->contenu);
+		 $headers = array(
+            "Content-type"        => "text/csv",
+            "Content-Disposition" => "attachment; filename=$fileName",
+            "Pragma"              => "no-cache",
+            "Cache-Control"       => "must-revalidate, post-check=0, pre-check=0",
+            "Expires"             => "0"
+        );
+
+        $columns = array('Date', 'Utilisateur', 'Message');
+		$requete = array($article->created_at->format('d-m-Y'), $article->user->name, $article->contenu);
+
+			$callback = function() use($data, $columns, $requete) {
+            $file = fopen('php://output', 'w');
+            fputcsv($file, $columns);
+			//on charge la requete
+			
+		    fputcsv($file, $requete);
+			//on charge les reponses
+            foreach ($data as $task) {
+                $row['User']    = $task->user->name;
+                $row['Date']  = $task->created_at->format('d-m-Y');
+                $row['Message']  = $task->content;
+
+                fputcsv($file, array($row['Date'], $row['User'],$row['Message']));
+            }
+
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, $headers);
+	}
+	
 	public function exportCsv(Request $request)
 	{
 		$fileName = 'demandes.csv';

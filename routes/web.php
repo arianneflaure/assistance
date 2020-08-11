@@ -101,6 +101,7 @@ Route::prefix('articles')->middleware(['auth'])->group(function() {
     Route::get('/multiuploads', 'ArticleController@uploadForm');
     Route::post('/multiuploads', 'ArticleController@uploadSubmit');
 	Route::get('/export', 'ArticleController@exportCsv')->name('articles.export');
+	Route::get('/exportbyarticle', 'ArticleController@exportByArticleCsv')->name('articles.exportbyarticle');
 
 /*Route::get('articles.create','ArticleController@create');
 Route::get('articles.intermediaire');
